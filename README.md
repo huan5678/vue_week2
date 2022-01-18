@@ -1,7 +1,8 @@
-# Vue 3 + Vite
+# RESTful API 串接
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+第二週開始要接觸到課程的 API，是非常重要的一個章節，這份 API 會一直跟到直播班結束，同學們可用此份 API 建立屬於自己的電商資料，請務必在本週的時間內完成。
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+- 使用者可以從登入頁面登入，並轉到後台商品頁面
+- 使用者若無登入直接進入商品頁面，會被導回登入頁面
+- 使用者可以查看產品列表
+- 使用者可以點擊單一產品，查看詳細資訊

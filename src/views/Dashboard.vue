@@ -1,45 +1,62 @@
 <script>
-import { onMounted, ref } from "vue";
-import Api from "../api";
+import { onMounted, ref, onBeforeMount } from "vue";
+import Api, { getCookie, clearCookie } from "../api";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 export default {
   setup() {
-    let targetProduct = ref({});
+    const targetProduct = ref({});
 
-    let products = ref([]);
+    const products = ref([]);
 
-    const store = useStore();
+    const token = ref("");
+
     const router = useRouter();
 
     function handlerGetTarget(params) {
-      this.targetProduct = params;
+      targetProduct.value = params;
+    }
+
+    function handlerLogout() {
+      const data = {
+        method: "put",
+        url: `logout`,
+      };
+      Api(data);
+      clearCookie("token");
+      router.push("/");
     }
 
     const api_path = import.meta.env.VITE_API_PATH;
 
+    token.value = getCookie("token");
+
     const data = {
       method: "get",
       url: `api/${api_path}/admin/products/all`,
-      token: store.state.token,
+      token: token.value,
     };
 
+    onBeforeMount(() => {
+      token.value === undefined ? router.push("/") : null;
+    });
+
     onMounted(() => {
-      !store.state.isAuthenticated
-        ? router.push("/")
-        : Api(data)
-            .then((res) => {
-              products = res.data;
-            })
-            .catch((err) => {
-              console.dir(err);
-            });
+      token.value !== undefined &&
+        Api(data)
+          .then((res) => {
+            products.value = res.data.products;
+          })
+          .catch((err) => {
+            console.dir(err);
+          });
     });
 
     return {
       targetProduct,
       products,
       handlerGetTarget,
+      handlerLogout,
+      token,
     };
   },
 };
@@ -47,6 +64,18 @@ export default {
 
 <template>
   <main class="container">
+    <div
+      class="flex justify-end items-center gap-3 p-8"
+      v-if="token !== undefined"
+    >
+      <h2 class="text-xl">使用者登出</h2>
+      <button
+        class="rounded px-6 py-2 bg-rose-500 text-white hover:bg-rose-600 transition duration-300"
+        @click="handlerLogout()"
+      >
+        登出
+      </button>
+    </div>
     <div class="flex flex-wrap lg:flex-nowrap justify-around py-4 gap-4">
       <section class="lg:w-1/2">
         <h2 class="text-h2 font-medium mb-8">產品列表</h2>
@@ -138,7 +167,7 @@ export default {
             <img
               v-for="img in targetProduct?.imagesUrl"
               :key="img"
-              class="max-h-32 object-cover"
+              class="max-h-64 max-w-[8rem] object-cover flex-1"
               :src="img"
             />
           </div>

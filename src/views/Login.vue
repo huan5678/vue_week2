@@ -1,6 +1,6 @@
 <script>
-import Api from "../api";
-import { ref } from "vue";
+import Api, { getCookie } from "../api";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -29,6 +29,8 @@ export default {
       Api(data)
         .then((res) => {
           res.data.token && store.commit("setToken", res.data.token);
+          res.data.token &&
+            (document.cookie = `token=${res.data.token}; max-age=3600`);
           res.data.token && store.commit("isLogin");
           res.data.token && router.push("/dashboard");
         })
@@ -36,6 +38,12 @@ export default {
           console.dir(err);
         });
     }
+
+    onMounted(() => {
+      let cookieToken = getCookie("token");
+      cookieToken && router.push("/dashboard");
+    });
+
     return {
       userName,
       userPassword,
@@ -61,7 +69,7 @@ export default {
             name="userName"
             placeholder="請輸入帳號Email"
             v-model="userName"
-            class="p-2 rounded border w-full focus:outline-blue-600 invalid:text-blue-600 invalid:border-blue-600 focus:text-blue-600 text-blue-800"
+            class="p-2 rounded border w-full bg-gray-50 focus:outline-blue-600 invalid:text-blue-600 invalid:border-blue-600 focus:text-blue-600 text-blue-800"
           />
         </div>
         <div>
@@ -69,7 +77,7 @@ export default {
           <input
             id="userPassword"
             type="password"
-            class="p-2 rounded border w-full"
+            class="p-2 rounded border w-full bg-gray-50 focus:outline-blue-600 invalid:text-blue-600 invalid:border-blue-600 focus:text-blue-600 text-blue-800"
             v-model="userPassword"
             placeholder="請輸入密碼"
           />

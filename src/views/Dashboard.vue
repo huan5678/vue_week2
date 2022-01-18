@@ -125,7 +125,7 @@ export default {
             </tr>
           </tbody>
         </table>
-        <p>目前有{{ products.length }}項產品</p>
+        <p>目前有{{ Object.keys(products).length }}項產品</p>
       </section>
       <section class="lg:w-1/2">
         <div v-if="Object.keys(targetProduct).length === 0">

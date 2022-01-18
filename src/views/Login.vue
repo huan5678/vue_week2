@@ -68,7 +68,7 @@ export default {
             type="text"
             name="userName"
             placeholder="請輸入帳號Email"
-            v-model="userName"
+            v-model.trim="userName"
             class="p-2 rounded border w-full bg-gray-50 focus:outline-blue-600 invalid:text-blue-600 invalid:border-blue-600 focus:text-blue-600 text-blue-800"
           />
         </div>
